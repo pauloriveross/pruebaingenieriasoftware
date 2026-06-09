@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiSearch, FiUsers, FiTruck, FiShield, FiLock, FiArrowRight, FiClock, FiCheckCircle, FiFileText } from 'react-icons/fi';
+import { FiSearch, FiUsers, FiTruck, FiShield, FiLock, FiArrowRight, FiClock, FiCheckCircle, FiFileText, FiDollarSign } from 'react-icons/fi';
 
 const services = [
   {
@@ -37,6 +37,15 @@ const services = [
     link: '/sag',
     label: 'Hacer declaracion',
     color: '#059669',
+  },
+  {
+    icon: FiDollarSign,
+    title: 'Declaracion de Divisas (PDI)',
+    desc: 'Declaracion obligatoria de divisas y valores por montos iguales o superiores a USD 10,000 al ingresar o salir del pais, segun la legislacion vigente.',
+    details: ['Minimo USD 10,000 o equivalente', 'Multiple monedas aceptadas', 'Verificacion PDI en linea'],
+    link: '/divisas',
+    label: 'Declarar divisas',
+    color: '#7C3AED',
   },
 ];
 

@@ -8,6 +8,7 @@ import ConsultaTramites from '../pages/ConsultaTramites';
 import GestionMenores from '../pages/GestionMenores';
 import AdmisionVehiculos from '../pages/AdmisionVehiculos';
 import DeclaracionesSag from '../pages/DeclaracionesSag';
+import DeclaracionDivisas from '../pages/DeclaracionDivisas';
 import Dashboard from '../pages/Dashboard';
 import PanelPdi from '../pages/PanelPdi';
 import PanelSag from '../pages/PanelSag';
@@ -24,6 +25,7 @@ export default function AppRouter() {
       <Route path="/menores" element={<GestionMenores />} />
       <Route path="/vehiculos" element={<AdmisionVehiculos />} />
       <Route path="/sag" element={<DeclaracionesSag />} />
+      <Route path="/divisas" element={<DeclaracionDivisas />} />
 
       <Route
         element={

@@ -7,7 +7,7 @@ import { FiArrowLeft, FiLock, FiCheckCircle } from 'react-icons/fi';
 export default function GestionMenores() {
   const [alert, setAlert] = useState(null);
   const [exito, setExito] = useState(false);
-  const [form, setForm] = useState({ nombreMenor: '', rutMenor: '', tutor: '' });
+  const [form, setForm] = useState({ nombreMenor: '', rutMenor: '', tutor: '', rutTutor: '', nacionalidad: '' });
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -16,7 +16,7 @@ export default function GestionMenores() {
       await menorService.registrar(form);
       setAlert({ type: 'success', message: 'Menor registrado correctamente. Queda pendiente de validacion por PDI.' });
       setExito(true);
-      setForm({ nombreMenor: '', rutMenor: '', tutor: '' });
+      setForm({ nombreMenor: '', rutMenor: '', tutor: '', rutTutor: '', nacionalidad: '' });
     } catch (err) {
       setAlert({ type: 'error', message: err.message });
     }
@@ -66,9 +66,19 @@ export default function GestionMenores() {
                 <input value={form.rutMenor} onChange={(e) => setForm({ ...form, rutMenor: e.target.value })} required />
               </div>
             </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre del tutor</label>
+                <input value={form.tutor} onChange={(e) => setForm({ ...form, tutor: e.target.value })} required />
+              </div>
+              <div className="form-group">
+                <label>RUT/DNI del tutor</label>
+                <input value={form.rutTutor} onChange={(e) => setForm({ ...form, rutTutor: e.target.value })} required placeholder="12.345.678-9" />
+              </div>
+            </div>
             <div className="form-group">
-              <label>Nombre del tutor</label>
-              <input value={form.tutor} onChange={(e) => setForm({ ...form, tutor: e.target.value })} required />
+              <label>Nacionalidad</label>
+              <input value={form.nacionalidad} onChange={(e) => setForm({ ...form, nacionalidad: e.target.value })} required placeholder="Ej: Chilena, Argentina, etc." />
             </div>
             <div className="form-group">
               <label>Documento Permiso Notarial (PDF)</label>

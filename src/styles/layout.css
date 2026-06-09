@@ -28,6 +28,21 @@
   max-width: 1200px;
 }
 
+@media (max-width: 768px) {
+  .layout__main {
+    margin-left: 0 !important;
+  }
+  .layout__content {
+    padding: 16px;
+  }
+  .page-header h2 {
+    font-size: 18px;
+  }
+  .page-header p {
+    font-size: 13px;
+  }
+}
+
 .page-header {
   display: flex;
   flex-direction: column;

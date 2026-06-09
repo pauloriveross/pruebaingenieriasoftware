@@ -18,16 +18,18 @@ export const vehiculoService = {
     return [...mockVehiculos];
   },
 
-  async procesarAdmision(patente) {
+  async procesarAdmision(data) {
     await delay(800);
     const fechas = calcularAdmision();
     const nuevo = {
       id: Date.now(),
-      patente: patente.toUpperCase(),
+      patente: data.patente.toUpperCase(),
       marca: '---',
       modelo: '---',
       anio: new Date().getFullYear(),
-      propietario: '---',
+      propietario: data.nombre,
+      rutPropietario: data.rutPropietario,
+      nacionalidad: data.nacionalidad,
       ...fechas,
       estado: 'ACTIVA',
     };

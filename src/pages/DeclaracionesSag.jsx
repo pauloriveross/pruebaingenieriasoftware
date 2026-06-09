@@ -13,7 +13,8 @@ const tipoOptions = [
 export default function DeclaracionesSag() {
   const [alert, setAlert] = useState(null);
   const [exito, setExito] = useState(false);
-  const [form, setForm] = useState({ pasajero: '', tipo: 'MASCOTA', descripcion: '' });
+  const [form, setForm] = useState({ pasajero: '', rutPasajero: '', nacionalidad: '', tipo: 'MASCOTA', descripcion: '' });
+  const [quiereDeclarar, setQuiereDeclarar] = useState(null);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -22,7 +23,8 @@ export default function DeclaracionesSag() {
       await sagService.crear(form);
       setAlert({ type: 'success', message: 'Declaracion creada correctamente. Queda pendiente de revision por SAG.' });
       setExito(true);
-      setForm({ pasajero: '', tipo: 'MASCOTA', descripcion: '' });
+      setForm({ pasajero: '', rutPasajero: '', nacionalidad: '', tipo: 'MASCOTA', descripcion: '' });
+      setQuiereDeclarar(null);
     } catch (err) {
       setAlert({ type: 'error', message: err.message });
     }
@@ -62,28 +64,49 @@ export default function DeclaracionesSag() {
             <h3>Nueva Declaracion</h3>
           </div>
           <form onSubmit={handleCreate} className="vehiculo-form">
-            <div className="form-group">
-              <label>Pasajero</label>
-              <input value={form.pasajero} onChange={(e) => setForm({ ...form, pasajero: e.target.value })} required />
-            </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Tipo</label>
-                <select value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })}>
-                  {tipoOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
+                <label>Pasajero</label>
+                <input value={form.pasajero} onChange={(e) => setForm({ ...form, pasajero: e.target.value })} required />
+              </div>
+              <div className="form-group">
+                <label>RUT/DNI</label>
+                <input value={form.rutPasajero} onChange={(e) => setForm({ ...form, rutPasajero: e.target.value })} required placeholder="12.345.678-9" />
               </div>
             </div>
             <div className="form-group">
-              <label>Descripcion</label>
-              <textarea
-                value={form.descripcion}
-                onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-                rows={3}
-                required
-              />
+              <label>Nacionalidad</label>
+              <input value={form.nacionalidad} onChange={(e) => setForm({ ...form, nacionalidad: e.target.value })} required placeholder="Ej: Chilena, Argentina, etc." />
             </div>
-            <button type="submit" className="btn btn--primary">
+            <div className="form-group">
+              <label>Tipo</label>
+              <select value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })}>
+                {tipoOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div className="form-group" style={{ marginTop: 8 }}>
+              <label>¿Va a declarar algo?</label>
+              <div className="btn-group" style={{ marginTop: 4 }}>
+                <button type="button" className={`btn btn--sm ${quiereDeclarar === true ? 'btn--primary' : 'btn--secondary'}`} onClick={() => { setQuiereDeclarar(true); setForm({ ...form, descripcion: form.descripcion }); }}>
+                  Si
+                </button>
+                <button type="button" className={`btn btn--sm ${quiereDeclarar === false ? 'btn--primary' : 'btn--secondary'}`} onClick={() => { setQuiereDeclarar(false); setForm({ ...form, descripcion: '' }); }}>
+                  No
+                </button>
+              </div>
+            </div>
+            {quiereDeclarar === true && (
+              <div className="form-group">
+                <label>Descripcion</label>
+                <textarea
+                  value={form.descripcion}
+                  onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
+                  rows={3}
+                  required
+                />
+              </div>
+            )}
+            <button type="submit" className="btn btn--primary" style={{ marginTop: 16 }}>
               Enviar Declaracion
             </button>
           </form>

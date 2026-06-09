@@ -6,6 +6,9 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { FiSearch, FiPrinter, FiArrowLeft, FiLock } from 'react-icons/fi';
 
 export default function AdmisionVehiculos() {
+  const [nombre, setNombre] = useState('');
+  const [rutPropietario, setRutPropietario] = useState('');
+  const [nacionalidad, setNacionalidad] = useState('');
   const [patente, setPatente] = useState('');
   const [procesando, setProcesando] = useState(false);
   const [resultado, setResultado] = useState(null);
@@ -14,11 +17,14 @@ export default function AdmisionVehiculos() {
   const handleProcesar = async (e) => {
     e.preventDefault();
     if (!patente.trim()) { setAlert({ type: 'error', message: 'Ingrese una patente' }); return; }
+    if (!rutPropietario.trim()) { setAlert({ type: 'error', message: 'Ingrese su RUT/DNI' }); return; }
+    if (!nombre.trim()) { setAlert({ type: 'error', message: 'Ingrese su nombre y apellido' }); return; }
+    if (!nacionalidad.trim()) { setAlert({ type: 'error', message: 'Ingrese su nacionalidad' }); return; }
     setAlert(null);
     setResultado(null);
     setProcesando(true);
     try {
-      const res = await vehiculoService.procesarAdmision(patente);
+      const res = await vehiculoService.procesarAdmision({ patente, rutPropietario, nombre, nacionalidad });
       setResultado(res);
       setAlert({ type: 'success', message: 'Admision temporal procesada exitosamente' });
     } catch (err) {
@@ -52,6 +58,20 @@ export default function AdmisionVehiculos() {
             <h3>Procesar Nueva Admision</h3>
           </div>
           <form onSubmit={handleProcesar} className="vehiculo-form">
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre y apellido</label>
+                <input type="text" placeholder="Ej: Juan Perez" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>RUT/DNI</label>
+                <input type="text" placeholder="Ej: 12.345.678-9" value={rutPropietario} onChange={(e) => setRutPropietario(e.target.value)} required />
+              </div>
+            </div>
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label>Nacionalidad</label>
+              <input type="text" placeholder="Ej: Chilena, Argentina, etc." value={nacionalidad} onChange={(e) => setNacionalidad(e.target.value)} required />
+            </div>
             <div className="patente-input-group">
               <input
                 type="text"

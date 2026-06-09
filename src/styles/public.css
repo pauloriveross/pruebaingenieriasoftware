@@ -113,4 +113,20 @@
   .search-box {
     flex-direction: column;
   }
+  .public-page {
+    padding: 20px 12px;
+  }
+  .public-header h1 {
+    font-size: 20px;
+  }
+  .public-header p {
+    font-size: 13px;
+  }
+  .search-input {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+  .search-btn {
+    width: 100%;
+  }
 }

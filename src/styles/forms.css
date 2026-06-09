@@ -148,3 +148,22 @@
   display: flex;
   gap: 8px;
 }
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .patente-input-group {
+    flex-direction: column;
+  }
+  .patente-input {
+    max-width: 100%;
+    font-size: 16px;
+  }
+  .form-actions {
+    flex-direction: column;
+  }
+  .form-actions .btn {
+    width: 100%;
+  }
+}
