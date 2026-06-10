@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../services/dashboardService';
+import { tramiteService } from '../services/tramiteService';
 import { mockFlowRecords } from '../services/mockData';
 import StatCard from '../components/StatCard';
+import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {
-  FiUsers, FiTruck, FiUserCheck, FiShield,
+  FiUsers, FiTruck, FiUserCheck, FiShield, FiChevronRight,
 } from 'react-icons/fi';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -45,13 +47,31 @@ const chartData = {
   ],
 };
 
+const badgeClass = (estado) => {
+  const map = {
+    'Aprobado': 'badge badge--success',
+    'Rechazado': 'badge badge--danger',
+    'Pendiente PDI': 'badge badge--warning',
+    'Revision': 'badge badge--info',
+    'En Proceso': 'badge badge--info',
+    'Pendiente': 'badge badge--warning',
+  };
+  return map[estado] || 'badge';
+};
+
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tramites, setTramites] = useState([]);
+  const [detalle, setDetalle] = useState(null);
 
   useEffect(() => {
-    dashboardService.getStats().then((data) => {
-      setStats(data);
+    Promise.all([
+      dashboardService.getStats(),
+      tramiteService.listarTodos(),
+    ]).then(([s, t]) => {
+      setStats(s);
+      setTramites(t);
       setLoading(false);
     });
   }, []);
@@ -62,6 +82,8 @@ export default function Dashboard() {
     if (ayer === 0) return 0;
     return Math.round(((hoy - ayer) / ayer) * 100);
   };
+
+  const tramitesRecientes = tramites.slice(0, 6);
 
   return (
     <div className="page animate-in">
@@ -111,6 +133,84 @@ export default function Dashboard() {
           <Bar data={chartData} options={chartOptions} />
         </div>
       </div>
+
+      <div className="card">
+        <div className="card__header">
+          <h3>Tramites Recientes</h3>
+          <span className="badge badge--info">{tramites.length} total</span>
+        </div>
+        {tramitesRecientes.length === 0 ? (
+          <div style={{ padding: 24, textAlign: 'center', color: 'var(--color-text-light)' }}>
+            No hay tramites registrados.
+          </div>
+        ) : (
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Nombre</th>
+                  <th>RUT/DNI</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th style={{ width: 50 }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tramitesRecientes.map((t) => (
+                  <tr key={t.id} onClick={() => setDetalle(t)} style={{ cursor: 'pointer' }}>
+                    <td>{t.fecha}</td>
+                    <td>{t.nombre}</td>
+                    <td>{t.rut}</td>
+                    <td>{t.tipo}</td>
+                    <td><span className={badgeClass(t.estado)}>{t.estado}</span></td>
+                    <td><FiChevronRight size={16} style={{ color: 'var(--color-text-light)' }} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <Modal isOpen={!!detalle} onClose={() => setDetalle(null)} title="Detalle del Tramite" size="lg">
+        {detalle && (
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+              <div>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block' }}>Nombre</strong>
+                <span>{detalle.nombre}</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block' }}>RUT/DNI</strong>
+                <span>{detalle.rut}</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block' }}>Tipo de Tramite</strong>
+                <span>{detalle.tipo}</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block' }}>Fecha</strong>
+                <span>{detalle.fecha}</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block' }}>Estado</strong>
+                <span className={badgeClass(detalle.estado)}>{detalle.estado}</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block' }}>ID Tramite</strong>
+                <span>#{detalle.id}</span>
+              </div>
+            </div>
+            {detalle.detalle && (
+              <div style={{ padding: 16, background: 'var(--color-secondary)', borderRadius: 'var(--radius-sm)' }}>
+                <strong style={{ fontSize: 12, color: 'var(--color-text-light)', display: 'block', marginBottom: 4 }}>Detalles adicionales</strong>
+                <p>{detalle.detalle}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

@@ -9,6 +9,7 @@
 @import './components.css';
 @import './landing.css';
 @import './public.css';
+@import './accesibilidad.css';
 
 *, *::before, *::after {
   margin: 0;

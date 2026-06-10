@@ -8,11 +8,14 @@ export const sagService = {
     return [...mockDeclaracionesSag];
   },
 
-  async crear(declaracion) {
+  async crear(data) {
     await delay();
     const nueva = {
       id: Date.now(),
-      ...declaracion,
+      pasajero: data.pasajero,
+      rutPasajero: data.rutPasajero,
+      nacionalidad: data.nacionalidad,
+      items: data.items || [{ tipo: data.tipo || 'MASCOTA', descripcion: data.descripcion || '' }],
       aprobado: null,
       fecha: new Date().toISOString().split('T')[0],
     };
@@ -20,10 +23,18 @@ export const sagService = {
     return nueva;
   },
 
-  async aprobar(id, aprobado) {
+  async aprobar(id, aprobado, comentario) {
     await delay();
     const decl = mockDeclaracionesSag.find((d) => d.id === id);
-    if (decl) decl.aprobado = aprobado;
+    if (decl) {
+      decl.aprobado = aprobado;
+      if (comentario) decl.comentario = comentario;
+    }
     return { id, aprobado };
+  },
+
+  async obtenerPorId(id) {
+    await delay();
+    return mockDeclaracionesSag.find((d) => d.id === id) || null;
   },
 };
